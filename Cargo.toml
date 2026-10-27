@@ -1,0 +1,7 @@
+[package]
+name = "lady"
+version = "0.1.0"
+edition = "2024"
+description = "Locally-hosted database management tool"
+
+[dependencies]
