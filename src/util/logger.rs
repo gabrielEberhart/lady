@@ -63,28 +63,28 @@ pub fn log(severity: Severity, file: &str, line: u32, args: fmt::Arguments<'_>) 
 #[macro_export]
 macro_rules! debug {
     ($($arg:tt)*) => {
-        $crate::logger::log($crate::logger::Severity::Debug, file!(), line!(), format_args!($($arg)*))
+        $crate::util::logger::log($crate::util::logger::Severity::Debug, file!(), line!(), format_args!($($arg)*))
     };
 }
 
 #[macro_export]
 macro_rules! info {
     ($($arg:tt)*) => {
-        $crate::logger::log($crate::logger::Severity::Info, file!(), line!(), format_args!($($arg)*))
+        $crate::util::logger::log($crate::util::logger::Severity::Info, file!(), line!(), format_args!($($arg)*))
     };
 }
 
 #[macro_export]
 macro_rules! warn {
     ($($arg:tt)*) => {
-        $crate::logger::log($crate::logger::Severity::Warn, file!(), line!(), format_args!($($arg)*))
+        $crate::util::logger::log($crate::util::logger::Severity::Warn, file!(), line!(), format_args!($($arg)*))
     };
 }
 
 #[macro_export]
 macro_rules! error {
     ($($arg:tt)*) => {
-        $crate::logger::log($crate::logger::Severity::Error, file!(), line!(), format_args!($($arg)*))
+        $crate::util::logger::log($crate::util::logger::Severity::Error, file!(), line!(), format_args!($($arg)*))
     };
 }
 
