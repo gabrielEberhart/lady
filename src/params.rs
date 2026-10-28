@@ -11,6 +11,13 @@ use std::path::PathBuf;
 /// Retrieves the base directory where Lady's config will reside. Depends on the
 /// target operating system of the build.
 fn base_dir() -> Option<PathBuf> {
+    // check for override directory
+    // if LADY_CONFIG_DIR is not defined, move on to the default directory
+    if let Some(dir) = env::var_os("LADY_CONFIG_DIR") {
+        // repackage the directory
+        return Some(PathBuf::from(dir));
+    }
+
     #[cfg(target_os = "windows")]
     {
         // %APPDATA% (e.g. C:\Users\Name\AppData\Roaming)
