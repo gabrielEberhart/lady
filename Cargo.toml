@@ -5,3 +5,7 @@ edition = "2024"
 description = "Locally-hosted database management tool"
 
 [dependencies]
+
+[dependencies.tokio]
+version = "1.54.1"
+features = ["net", "io-util", "rt-multi-thread", "macros", "time"]
