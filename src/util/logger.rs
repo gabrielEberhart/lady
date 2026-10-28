@@ -87,3 +87,27 @@ macro_rules! error {
         $crate::logger::log($crate::logger::Severity::Error, file!(), line!(), format_args!($($arg)*))
     };
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn correct_ord() {
+        use Severity::*;
+        assert!(Debug < Info);
+        assert!(Info < Warn);
+        assert!(Warn < Error);
+    }
+
+    #[test]
+    fn change_min_level() {
+        set_level(Severity::Info); // most likely setting
+
+        // convert `Severity::Info` to AtomicU8
+        let info_u8 = Severity::Info as u8;
+
+        // check inner u8 values
+        assert_eq!(MIN_LEVEL.load(Ordering::Relaxed), info_u8);
+    }
+}
