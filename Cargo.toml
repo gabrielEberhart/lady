@@ -5,6 +5,7 @@ edition = "2024"
 description = "Locally-hosted database management tool"
 
 [dependencies]
+chrono = "0.4.45"
 
 [dependencies.tokio]
 version = "1.54.1"
