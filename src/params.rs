@@ -8,7 +8,11 @@
 use crate::{debug, error, info, warn};
 use serde::{Deserialize, Serialize};
 use std::env;
-use std::path::PathBuf;
+use std::fs::File;
+use std::io::{Error, Read};
+use std::path::{Path, PathBuf};
+
+const DEFAULT_PORT: i16 = 3306;
 
 /// Retrieves the base directory where Lady's config will reside. Depends on the
 /// target operating system of the build.
@@ -39,19 +43,17 @@ fn base_dir() -> Option<PathBuf> {
         })
     }
 
-    #[cfg(target_os = "linux")]
-    {
-        // $XDG_DATA_HOME, falling back to ~/.local/share.
-        // The XDG spec says empty or relative values must be ignored.
-        debug!("checking for $XDG_DATA_HOME");
-        env::var_os("XDG_DATA_HOME")
-            .map(PathBuf::from)
-            .filter(|p| p.is_absolute())
-            .or_else(|| {
-                debug!("$XDG_DATA_HOME failed, checking ~/.local/share");
-                env::var_os("HOME").map(|home| PathBuf::from(home).join(".local").join("share"))
-            })
-    }
+    // defaults to Linux convention. Hopefully this includes other OSes as well.
+    // $XDG_DATA_HOME, falling back to ~/.local/share.
+    // The XDG spec says empty or relative values must be ignored.
+    debug!("checking for $XDG_DATA_HOME");
+    env::var_os("XDG_DATA_HOME")
+        .map(PathBuf::from)
+        .filter(|p| p.is_absolute())
+        .or_else(|| {
+            debug!("$XDG_DATA_HOME failed, checking ~/.local/share");
+            env::var_os("HOME").map(|home| PathBuf::from(home).join(".local").join("share"))
+        })
 }
 
 fn get_file_path() -> PathBuf {
@@ -59,6 +61,14 @@ fn get_file_path() -> PathBuf {
     debug!("determined base directory: {base_dir:?}");
 
     base_dir.join("lady").join("params.json")
+}
+
+fn read_file(path: &Path) -> Result<String, Error> {
+    let mut file = File::open(path)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+
+    Ok(contents)
 }
 
 /// A struct of all paramaters for the app. Typically loaded from the dotfile
@@ -70,11 +80,20 @@ pub struct AppParams {
     pub port: i16,
 }
 impl AppParams {
-    pub fn load_from_file() -> Self {
+    /// Attempts to load the `AppParam` from a JSON file, but an IO error can
+    /// occur. It is recommended to use `default()` in that case.
+    pub fn from_json() -> Result<Self, Error> {
         let param_path = get_file_path();
-        info!("Found AppParam path at {:?}", param_path);
-        let mut params: Self;
-        todo!("deserialize params.json");
-        params
+        info!("Found AppParam path at {param_path:?}");
+
+        let contents = read_file(&param_path)?;
+
+        // type annotations
+        let params: Self = serde_json::from_str(&contents)?;
+        Ok(params)
+    }
+    /// Creates a new AppParams file with default values.
+    pub fn default() -> Self {
+        Self { port: DEFAULT_PORT }
     }
 }
