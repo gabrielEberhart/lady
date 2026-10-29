@@ -29,31 +29,31 @@ fn base_dir() -> Option<PathBuf> {
     {
         // %APPDATA% (e.g. C:\Users\Name\AppData\Roaming)
         debug!("finding $APPDATA definition");
-        env::var_os("APPDATA").map(PathBuf::from)
+        return env::var_os("APPDATA").map(PathBuf::from);
     }
 
     #[cfg(target_os = "macos")]
     {
         // ~/Library/Application Support
         debug!("finding ~/Library/Application Support");
-        env::var_os("HOME").map(|home| {
+        return env::var_os("HOME").map(|home| {
             PathBuf::from(home)
                 .join("Library")
                 .join("Application Support")
-        })
+        });
     }
 
     // defaults to Linux convention. Hopefully this includes other OSes as well.
     // $XDG_DATA_HOME, falling back to ~/.local/share.
     // The XDG spec says empty or relative values must be ignored.
     debug!("checking for $XDG_DATA_HOME");
-    env::var_os("XDG_DATA_HOME")
+    return env::var_os("XDG_DATA_HOME")
         .map(PathBuf::from)
         .filter(|p| p.is_absolute())
         .or_else(|| {
             debug!("$XDG_DATA_HOME failed, checking ~/.local/share");
             env::var_os("HOME").map(|home| PathBuf::from(home).join(".local").join("share"))
-        })
+        });
 }
 
 fn get_file_path() -> PathBuf {
