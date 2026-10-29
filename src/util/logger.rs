@@ -36,6 +36,7 @@ pub fn set_level(level: Severity) {
 
 /// Core logging function. Prefer the `debug!`, `info!`, `warn!`, `error!` macros,
 /// which fill in the file name and line number automatically.
+#[allow(unused)] // this is used by the macros, but linting doesn't catch that
 pub fn log(severity: Severity, file: &str, line: u32, args: fmt::Arguments<'_>) {
     if (severity as u8) < MIN_LEVEL.load(Ordering::Relaxed) {
         return;
