@@ -97,3 +97,25 @@ impl AppParams {
         Self { port: DEFAULT_PORT }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::assert_ne;
+
+    use super::*;
+
+    #[test]
+    fn base_dir_specified() {
+        unsafe {
+            env::set_var("LADY_CONFIG_DIR", "/etc/lady");
+        }
+        let dir = base_dir().unwrap();
+        assert_eq!(dir, PathBuf::from("/etc/lady"));
+    }
+
+    #[test]
+    fn base_dir_with_os() {
+        // Try with --all-targets to test properly
+        assert_ne!(base_dir(), None);
+    }
+}
