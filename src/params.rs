@@ -6,6 +6,7 @@
 //! `%APPDATA%\lady\params.json`.
 
 use crate::{debug, error, info, warn};
+use serde::{Deserialize, Serialize};
 use std::env;
 use std::path::PathBuf;
 
@@ -64,6 +65,7 @@ fn get_file_path() -> PathBuf {
 /// associated with the project. On Linux supporting XDG specifications, this
 /// defaults to `$XDG_DATA_HOME/lady/params.json`. On Windows, this defaults to
 /// `%APPDATA%\lady\params.json`.
+#[derive(Serialize, Deserialize)]
 pub struct AppParams {
     pub port: i16,
 }
