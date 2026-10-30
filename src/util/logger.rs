@@ -55,9 +55,9 @@ pub fn log(severity: Severity, file: &str, line: u32, args: fmt::Arguments<'_>) 
     // Locking the handle keeps each log line intact across threads.
     // Warnings and errors go to stderr; everything else to stdout.
     if severity >= Severity::Warn {
-        let _ = writeln!(std::io::stderr().lock(), "{msg}");
+        eprintln!("{msg}");
     } else {
-        let _ = writeln!(std::io::stdout().lock(), "{msg}");
+        println!("{msg}");
     }
 }
 
