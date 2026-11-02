@@ -29,7 +29,7 @@ fn base_dir() -> Option<PathBuf> {
     {
         // %APPDATA% (e.g. C:\Users\Name\AppData\Roaming)
         debug!("finding $APPDATA definition");
-        return env::var_os("APPDATA").map(PathBuf::from);
+        env::var_os("APPDATA").map(PathBuf::from)
     }
 
     #[cfg(target_os = "macos")]
