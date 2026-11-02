@@ -5,7 +5,7 @@
 //! `$XDG_DATA_HOME/lady/params.json`. On Windows, this defaults to
 //! `%APPDATA%\lady\params.json`.
 
-use crate::{debug, error, info, warn};
+use crate::{debug, info};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs::File;
@@ -47,13 +47,13 @@ fn base_dir() -> Option<PathBuf> {
     // $XDG_DATA_HOME, falling back to ~/.local/share.
     // The XDG spec says empty or relative values must be ignored.
     debug!("checking for $XDG_DATA_HOME");
-    return env::var_os("XDG_DATA_HOME")
+    env::var_os("XDG_DATA_HOME")
         .map(PathBuf::from)
         .filter(|p| p.is_absolute())
         .or_else(|| {
             debug!("$XDG_DATA_HOME failed, checking ~/.local/share");
             env::var_os("HOME").map(|home| PathBuf::from(home).join(".local").join("share"))
-        });
+        })
 }
 
 fn get_file_path() -> PathBuf {
