@@ -1,6 +1,5 @@
 use chrono::Local;
 use std::fmt;
-use std::io::Write;
 use std::sync::atomic::{AtomicU8, Ordering};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -43,10 +42,7 @@ pub fn log(severity: Severity, file: &str, line: u32, args: fmt::Arguments<'_>) 
     }
 
     // `file!()` yields a path like "src/main.rs"; keep only the file name.
-    let filename = file
-        .rsplit(|c| c == '/' || c == '\\')
-        .next()
-        .unwrap_or(file);
+    let filename = file.rsplit(['/', '\\']).next().unwrap_or(file);
 
     let timestamp = Local::now().format("%d-%m-%Y %H:%M:%S");
 
@@ -55,9 +51,9 @@ pub fn log(severity: Severity, file: &str, line: u32, args: fmt::Arguments<'_>) 
     // Locking the handle keeps each log line intact across threads.
     // Warnings and errors go to stderr; everything else to stdout.
     if severity >= Severity::Warn {
-        let _ = writeln!(std::io::stderr().lock(), "{msg}");
+        eprintln!("{msg}");
     } else {
-        let _ = writeln!(std::io::stdout().lock(), "{msg}");
+        println!("{msg}");
     }
 }
 

@@ -73,7 +73,7 @@ mod platform {
     const ERROR_PIPE_BUSY: i32 = 231;
 
     fn pipe_name(name: &str) -> String {
-        return format!(r"\\.\pipe\{name}");
+        format!(r"\\.\pipe\{name}")
     }
 
     pub struct PipeEndpoint {
@@ -116,7 +116,5 @@ mod platform {
     }
 }
 
-#[cfg(windows)]
-pub use platform::PipeEndpoint as PlatformEndpoint;
 #[cfg(unix)]
 pub use platform::SocketEndpoint as PlatformEndpoint;

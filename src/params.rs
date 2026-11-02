@@ -5,7 +5,7 @@
 //! `$XDG_DATA_HOME/lady/params.json`. On Windows, this defaults to
 //! `%APPDATA%\lady\params.json`.
 
-use crate::{debug, error, info, warn};
+use crate::{debug, info};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs::File;
@@ -36,24 +36,26 @@ fn base_dir() -> Option<PathBuf> {
     {
         // ~/Library/Application Support
         debug!("finding ~/Library/Application Support");
-        env::var_os("HOME").map(|home| {
+        return env::var_os("HOME").map(|home| {
             PathBuf::from(home)
                 .join("Library")
                 .join("Application Support")
-        })
+        });
     }
 
-    // defaults to Linux convention. Hopefully this includes other OSes as well.
-    // $XDG_DATA_HOME, falling back to ~/.local/share.
-    // The XDG spec says empty or relative values must be ignored.
-    debug!("checking for $XDG_DATA_HOME");
-    env::var_os("XDG_DATA_HOME")
-        .map(PathBuf::from)
-        .filter(|p| p.is_absolute())
-        .or_else(|| {
-            debug!("$XDG_DATA_HOME failed, checking ~/.local/share");
-            env::var_os("HOME").map(|home| PathBuf::from(home).join(".local").join("share"))
-        })
+    #[cfg(target_os = "linux")]
+    {
+        // $XDG_DATA_HOME, falling back to ~/.local/share.
+        // The XDG spec says empty or relative values must be ignored.
+        debug!("checking for $XDG_DATA_HOME");
+        return env::var_os("XDG_DATA_HOME")
+            .map(PathBuf::from)
+            .filter(|p| p.is_absolute())
+            .or_else(|| {
+                debug!("$XDG_DATA_HOME failed, checking ~/.local/share");
+                env::var_os("HOME").map(|home| PathBuf::from(home).join(".local").join("share"))
+            });
+    }
 }
 
 fn get_file_path() -> PathBuf {
@@ -95,5 +97,27 @@ impl AppParams {
     /// Creates a new AppParams file with default values.
     pub fn default() -> Self {
         Self { port: DEFAULT_PORT }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::assert_ne;
+
+    use super::*;
+
+    #[test]
+    fn base_dir_specified() {
+        unsafe {
+            env::set_var("LADY_CONFIG_DIR", "/etc/lady");
+        }
+        let dir = base_dir().unwrap();
+        assert_eq!(dir, PathBuf::from("/etc/lady"));
+    }
+
+    #[test]
+    fn base_dir_with_os() {
+        // Try with --all-targets to test properly
+        assert_ne!(base_dir(), None);
     }
 }
