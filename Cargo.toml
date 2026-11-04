@@ -5,6 +5,7 @@ edition = "2024"
 description = "Locally-hosted database management tool"
 
 [dependencies]
+async-trait = "0.1.92"
 chrono = "0.4.45"
 mysql_async = "0.37.1"
 serde = { version = "1.0.229", features = ["derive"] }
