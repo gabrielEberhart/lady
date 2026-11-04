@@ -542,6 +542,7 @@ dependencies = [
  "mysql_async",
  "serde",
  "serde_json",
+ "thiserror",
  "tokio",
 ]
 
