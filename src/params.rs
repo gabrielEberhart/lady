@@ -116,7 +116,7 @@ mod tests {
     }
 
     #[test]
-    fn base_dir_with_os() {
+    fn base_dir_not_none() {
         // Try with --all-targets to test properly
         assert_ne!(base_dir(), None);
     }
