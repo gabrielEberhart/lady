@@ -4,6 +4,8 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
+mod maria;
+
 /// Engine-agnostic, serializable error. All variants are represented as a struct,
 /// allowing serde's `kind` tag to work so that data can be send in HTTP response
 /// bodies.
@@ -119,7 +121,7 @@ pub trait Executor: Send + Sync {
         query: &str,
     ) -> Result<QueryOutput, DatabaseError>;
 
-    fn list_schemas(&self) -> Result<Schema, DatabaseError>;
+    fn list_schemas(&self) -> Result<&[Schema], DatabaseError>;
 
     fn get_schema(&self, name: &str) -> Result<Option<Schema>, DatabaseError>;
 }
