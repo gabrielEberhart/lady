@@ -2,6 +2,7 @@ use crate::params::AppParams;
 
 mod params;
 mod util;
+mod database;
 
 fn main() {
     // load AppParams file
