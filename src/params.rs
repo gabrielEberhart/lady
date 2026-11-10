@@ -12,6 +12,8 @@ use std::fs::File;
 use std::io::{Error, Read};
 use std::path::{Path, PathBuf};
 
+use crate::util::logger::Severity;
+
 const DEFAULT_PORT: i16 = 3306;
 const CURRENT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -78,10 +80,11 @@ fn read_file(path: &Path) -> Result<String, Error> {
 /// associated with the project. On Linux supporting XDG specifications, this
 /// defaults to `$XDG_DATA_HOME/lady/params.json`. On Windows, this defaults to
 /// `%APPDATA%\lady\params.json`.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AppParams {
-    pub port: i16,
     pub version: String,
+    pub port: i16,
+    pub log_level: Severity,
 }
 impl AppParams {
     /// Attempts to load the `AppParam` from a JSON file, but an IO error can
@@ -100,6 +103,7 @@ impl AppParams {
     pub fn default() -> Self {
         Self {
             port: DEFAULT_PORT,
+            log_level: Severity::Info,
             version: CURRENT_VERSION.to_string(),
         }
     }
@@ -115,6 +119,7 @@ mod tests {
     fn default_params() {
         let params = AppParams::default();
         assert_eq!(params.port, DEFAULT_PORT);
+        assert_eq!(params.log_level, Severity::Info);
         assert_eq!(params.version, CURRENT_VERSION.to_string());
     }
 
