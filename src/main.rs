@@ -23,6 +23,10 @@ fn main() {
                 // set log level to debug
                 logger::set_level(Severity::Debug);
             }
+            "--quiet" | "-q" => {
+                // set log level to error
+                logger::set_level(Severity::Error);
+            }
             _ => {
                 println!("Unknown argument: {}", arg);
                 process::exit(1);
@@ -31,7 +35,7 @@ fn main() {
     });
 
     // load AppParams file
-    let params: AppParams = match AppParams::from_json() {
+    let mut params: AppParams = match AppParams::from_json() {
         Ok(val) => val,      // load params from file
         Err(_) => AppParams::default(), // or create a new default param
     };
@@ -44,4 +48,6 @@ fn print_help() {
     println!("Options:");
     println!("  --help, -h\tShow this help message");
     println!("  --version\tShow the version of the application");
+    println!("  --verbose, -v\tEnable verbose logging (debug level)");
+    println!("  --quiet, -q\tEnable quiet logging (error level)");
 }
