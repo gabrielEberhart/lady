@@ -7,7 +7,7 @@ mod database;
 fn main() {
     // load AppParams file
     let params: AppParams = match AppParams::from_json() {
-        Ok(val) => val,                 // load params from file
+        Ok(val) => val,      // load params from file
         Err(_) => AppParams::default(), // or create a new default param
     };
 
