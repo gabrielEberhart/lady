@@ -13,6 +13,7 @@ use std::io::{Error, Read};
 use std::path::{Path, PathBuf};
 
 const DEFAULT_PORT: i16 = 3306;
+const CURRENT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Retrieves the base directory where Lady's config will reside. Depends on the
 /// target operating system of the build.
@@ -80,6 +81,7 @@ fn read_file(path: &Path) -> Result<String, Error> {
 #[derive(Serialize, Deserialize)]
 pub struct AppParams {
     pub port: i16,
+    pub version: String,
 }
 impl AppParams {
     /// Attempts to load the `AppParam` from a JSON file, but an IO error can
@@ -96,7 +98,10 @@ impl AppParams {
     }
     /// Creates a new AppParams file with default values.
     pub fn default() -> Self {
-        Self { port: DEFAULT_PORT }
+        Self {
+            port: DEFAULT_PORT,
+            version: CURRENT_VERSION.to_string(),
+        }
     }
 }
 
@@ -105,6 +110,13 @@ mod tests {
     use std::assert_ne;
 
     use super::*;
+
+    #[test]
+    fn default_params() {
+        let params = AppParams::default();
+        assert_eq!(params.port, DEFAULT_PORT);
+        assert_eq!(params.version, CURRENT_VERSION.to_string());
+    }
 
     #[test]
     fn base_dir_specified() {
