@@ -9,7 +9,8 @@ mod database;
 
 fn main() {
     // read args
-    env::args().for_each(|arg| {
+    // skip first arg (program name)
+    env::args().skip(1).for_each(|arg| {
         match arg.as_str() {
             "--help" | "-h" => {
                 print_help();
