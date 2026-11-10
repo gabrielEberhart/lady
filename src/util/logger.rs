@@ -28,7 +28,7 @@ impl fmt::Display for Severity {
     }
 }
 
-static MIN_LEVEL: AtomicU8 = AtomicU8::new(Severity::Debug as u8);
+static MIN_LEVEL: AtomicU8 = AtomicU8::new(Severity::Info as u8);
 
 /// Set the minimum severity that gets logged.
 pub fn set_level(level: Severity) {
