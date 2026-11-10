@@ -12,8 +12,6 @@ use std::fs::File;
 use std::io::{Error, Read};
 use std::path::{Path, PathBuf};
 
-use crate::util::logger::Severity;
-
 const DEFAULT_PORT: i16 = 3306;
 const CURRENT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -84,7 +82,6 @@ fn read_file(path: &Path) -> Result<String, Error> {
 pub struct AppParams {
     pub version: String,
     pub port: i16,
-    pub log_level: Severity,
 }
 impl AppParams {
     /// Attempts to load the `AppParam` from a JSON file, but an IO error can
@@ -103,7 +100,6 @@ impl AppParams {
     pub fn default() -> Self {
         Self {
             port: DEFAULT_PORT,
-            log_level: Severity::Info,
             version: CURRENT_VERSION.to_string(),
         }
     }
@@ -119,7 +115,6 @@ mod tests {
     fn default_params() {
         let params = AppParams::default();
         assert_eq!(params.port, DEFAULT_PORT);
-        assert_eq!(params.log_level, Severity::Info);
         assert_eq!(params.version, CURRENT_VERSION.to_string());
     }
 

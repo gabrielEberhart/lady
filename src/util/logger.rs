@@ -1,10 +1,8 @@
 use chrono::Local;
 use std::fmt;
 use std::sync::atomic::{AtomicU8, Ordering};
-use serde::{Serialize, Deserialize};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
-#[derive(Serialize, Deserialize)]
 #[repr(u8)]
 pub enum Severity {
     Debug = 0,
